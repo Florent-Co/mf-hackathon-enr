@@ -94,7 +94,7 @@ def download(root_dir: str, type: str, **query):
                 if not os.path.exists(output_path):
                     os.makedirs(output_path)
                 output_path = f"{output_path}/{url.split('/')[-1]}"
-                if os.path.exists(output_path):
+                if not os.path.exists(output_path):
                     total_size = int(response.headers.get("content-length", 0))
                     with open(output_path, "wb") as f, tqdm(
                         desc=f"Downloading {url.split('/')[-1]}",
