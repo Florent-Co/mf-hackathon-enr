@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import { Slider, type SliderSingleProps } from 'antd';
 import styles from './style.module.css';
 import { monthAtom } from '../../store';
@@ -25,7 +24,7 @@ export default function MonthSlider() {
   const [, setMonth] = useAtom(monthAtom);
 
 
-  const changeMonth = (e) => {
+  const changeMonth = (e: number) => {
     console.log(e);
     setMonth(e < 10 ? `0${e}`: e.toString());
     addLayer()

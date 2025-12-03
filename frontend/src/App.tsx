@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import "maplibre-gl/dist/maplibre-gl.css";
-import maplibregl, { type MapMouseEvent } from "maplibre-gl";
-import { getStyle, setLayerOpacity, swapLayers } from "basemapkit";
+import maplibregl from "maplibre-gl";
+import { getStyle, setLayerOpacity } from "basemapkit";
 import { Protocol } from "pmtiles";
-import { InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import './App.css'
 import { Colormap, MultiChannelSeriesTiledLayer, ColormapDescriptionLibrary, type MultiChannelSeriesTiledLayerSpecification } from 'shadertiledlayer';
 
@@ -13,7 +13,6 @@ import { climatelayerPickingValueAtom } from './store';
 import { useAtom } from 'jotai';
 import TraccSlider from './components/TraccSlider';
 import MonthSlider from './components/MonthSlider';
-import MenuIndicators from './components/MenuIndicators';
 import SideMenu from './components/SideMenu';
 import InfoDrawerContent from './components/InfoDrawerContent';
 
@@ -83,12 +82,6 @@ function App() {
       })()
   }, []);
 
-
-  const buttonClick = () => {
-    console.log("hello", mapRef.current);
-    
-  }
-
   const onOpenDrawer = () => {
     setDrawerOpen(true);
   }
@@ -103,6 +96,15 @@ function App() {
       <TraccSlider/>
       <MonthSlider/>
       <SideMenu/>
+      
+      <a
+        href="https://www.data.gouv.fr/reuses/climate4energie/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mf-logo-link"
+      >
+        <img className='mf-logo' src="/logo-meteo-france.svg" alt="Meteo France Logo" />
+      </a>
       <div className='element-container'>
         
         <span>{climatelayerPickingValue ? `${climatelayerPickingValue.value.toFixed(2)} ${climatelayerPickingValue.unit}` : ""}</span>

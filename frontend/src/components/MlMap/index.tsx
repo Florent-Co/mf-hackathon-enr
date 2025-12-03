@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import "maplibre-gl/dist/maplibre-gl.css";
-import maplibregl, { type MapMouseEvent } from "maplibre-gl";
+import maplibregl from "maplibre-gl";
 import { getStyle, setLayerOpacity } from "basemapkit";
 import { Protocol } from "pmtiles";
 import styles from './style.module.css';
-import { Colormap, MultiChannelSeriesTiledLayer, ColormapDescriptionLibrary, type MultiChannelSeriesTiledLayerSpecification } from 'shadertiledlayer';
-import { climatelayerPickingValueAtom, mlMapAtom } from '../../store';
-import { getDefaultStore, useAtom } from 'jotai';
+import { mlMapAtom } from '../../store';
+import { useAtom } from 'jotai';
 import { addLayer } from '../../tools';
 
 const lang = "fr";

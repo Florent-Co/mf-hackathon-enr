@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import { Slider, type SliderSingleProps } from 'antd';
 import styles from './style.module.css';
 import { getDefaultStore, useAtom } from 'jotai';
@@ -18,9 +17,9 @@ const marks: SliderSingleProps['marks'] = {
 
 
 export default function TraccSlider() {
-  const [traccValue, setTraccValue] = useAtom(traccValueAtom);
+  const [, setTraccValue] = useAtom(traccValueAtom);
 
-  const onChange = (e) => {
+  const onChange = (e: number) => {
     const store = getDefaultStore();
     const layer = store.get(layerAtom);
     setTraccValue(e)
