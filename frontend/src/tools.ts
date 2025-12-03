@@ -3,23 +3,22 @@ import { climatelayerPickingValueAtom, colormapAtom, indicatorAtom, layerAtom, l
 import { Colormap, ColormapDescriptionLibrary, MultiChannelSeriesTiledLayer, type MultiChannelSeriesTiledLayerSpecification } from "shadertiledlayer";
 import type { MapMouseEvent, Subscription } from "maplibre-gl";
 
-
-
-
-const turboTas = structuredClone(ColormapDescriptionLibrary.turbo)
-turboTas[1].push(0)
+const turboTas = structuredClone(ColormapDescriptionLibrary.turbo);
+// If turboTas[1] is not an array, assign a new array or modify as needed
+if (Array.isArray(turboTas[1])) {
+  turboTas[1].push(0);
+}
 
 const colormaps = {
   "dju": Colormap.fromColormapDescription(turboTas , { min: 0, max: 600 }),
   "tas": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: -10, max: 30 }),
   "tasmin0": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: 0, max: 30 }),
+  "tasmax30": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: 0, max: 30 }),
   "rsds": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: 0, max: 300 }),
   "ws": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: 0, max: 8 }),
 }
 
-
 let eventSub: Subscription | undefined = undefined;
-
 
 export async function addLayer() {
   // model: string, indicator: string, month:string, 

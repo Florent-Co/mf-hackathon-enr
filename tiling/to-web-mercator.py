@@ -578,12 +578,14 @@ if __name__ == "__main__":
     all_models = [
         "CMCC"
     ]
+    
     all_indicators = [
         # "dju",
         # "tas",
-        "tasmin0",
+        # "tasmin0",
         # "rsds",
-        # "ws"
+        # "ws",
+        "tasmax30",
     ]
     all_tracc_values = [
         "15",
@@ -604,6 +606,7 @@ if __name__ == "__main__":
         "dju": 0,
         "tas": -20,
         "tasmin0": 0,
+        "tasmax30": 0,
         "rsds": 0,
         "ws": 0,
     }
@@ -612,6 +615,7 @@ if __name__ == "__main__":
         "dju": 1,
         "tas": 0.01,
         "tasmin0": 1,
+        "tasmax30": 1,
         "rsds": 0.1,
         "ws": 0.1,
     }
@@ -620,6 +624,7 @@ if __name__ == "__main__":
         "dju": "TRACC Degree",
         "tas": "TRACC Degree",
         "tasmin0": "TRACC Degree",
+        "tasmax30": "TRACC Degree",
         "rsds": "TRACC Degree",
         "ws": "TRACC Degree",
     }
@@ -628,6 +633,7 @@ if __name__ == "__main__":
         "dju": "°C",
         "tas": "°C",
         "tasmin0": "°C",
+        "tasmax30": "°C",
         "rsds": "°C",
         "ws": "°C",
     }
@@ -636,11 +642,15 @@ if __name__ == "__main__":
         "dju": "°C.day",
         "tas": "°C",
         "tasmin0": "jour(s)",
+        "tasmax30":  "jour(s)",
         "rsds": "W/m²",
         "ws": "m/s",
     }
 
-    file_pattern = '/home/jlurie/Downloads/tasmin0_cmcc/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
+    # file_pattern = '/home/jlurie/Downloads/tasmin0_CMCC/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
+
+    file_pattern = '/home/jlurie/Downloads/tasmax30_CMCC/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
+
 
     # file_pattern = "/home/jlurie/Downloads/rsds/{indicator}_{model}_tracc{tracc_value}_{month}.tif"
     # file_pattern = "/home/jlurie/Downloads/ws/{indicator}_{model}_tracc{tracc_value}_{month}.tif"
