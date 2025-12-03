@@ -295,7 +295,7 @@ def export_raw_raster_tile(z: int, x: int, y: int, src_ds_3857:gdal.Dataset, out
         projWin=proj_win,
         projWinSRS='EPSG:3857',
         outputType=gdal.GDT_Float32,
-        resampleAlg='cubic',
+        resampleAlg='bilinear',
         noData=None
     )
     dest_name = output_raw_tile_filepath
@@ -308,7 +308,7 @@ def export_raw_raster_tile(z: int, x: int, y: int, src_ds_3857:gdal.Dataset, out
             projWin=proj_win,
             projWinSRS='EPSG:3857',
             outputType=gdal.GDT_Float32,
-            resampleAlg='cubic',
+            resampleAlg='bilinear',
             noData=None
         )
         dest_name = ""
@@ -326,7 +326,7 @@ def export_raw_raster_tile(z: int, x: int, y: int, src_ds_3857:gdal.Dataset, out
     return out_ds
 
 
-def warp_to_web_mercator(input_file, output_file):
+def warp_to_web_mercator(input_file, output_folder:str):
     gdal.UseExceptions()
     gdal.SetConfigOption("GDAL_NUM_THREADS", "ALL_CPUS")
     gdal.PushErrorHandler('CPLQuietErrorHandler')
@@ -336,7 +336,7 @@ def warp_to_web_mercator(input_file, output_file):
     #     format="GTiff",                 # output GeoTIFF
     #     # srcSRS="EPSG:4326",
     #     dstSRS="EPSG:3857",
-    #     resampleAlg="cubic",            # same as -r cubic
+    #     resampleAlg="bilinear",            # same as -r cubic
     #     # same extent flags as your CLI:
     #     # outputBounds=(-WEBM_HALF, -WEBM_HALF, WEBM_HALF, WEBM_HALF),
     #     multithread=True,
@@ -351,19 +351,17 @@ def warp_to_web_mercator(input_file, output_file):
     #         "COMPRESS=DEFLATE",
     #     ],
     # )
-
-    # ds = gdal.Warp(output_file, input_file, options=warp_opts)
+    # ds = gdal.Warp(os.path.join(output_folder, "out.tif"), input_file, options=warp_opts)
 
     warp_opts = gdal.WarpOptions(
         format="MEM",                 # not writing it to file
         # srcSRS="EPSG:4326",
         # srcSRS="EPSG:3857",
         dstSRS="EPSG:3857",
-        resampleAlg="cubic",
+        resampleAlg="bilinear",
         multithread=True,
         warpOptions=["NUM_THREADS=ALL_CPUS"],
     )
-
     ds = gdal.Warp("", input_file, options=warp_opts)
 
     if ds is None:
@@ -451,53 +449,69 @@ def export_web_raster_tile(z: int, x: int, y: int, ds: gdal.Dataset, output_fold
 
 
 
-if __name__ == "__main__":
-    argz = parse_args(sys.argv[1:])
+def create_tileset(
+        input:str, 
+        output:str,
+        identifier:str,
+        minzoom:int,
+        maxzoom:int,
+        lowest_value:float,
+        value_step: float,
+        channels:str,
+        keep_raw_tiles:bool,
+        meta_name:str,
+        meta_description:str,
+        meta_attribution:str,
+        meta_pixel_unit:str,
+        meta_series_axis_name:str,
+        meta_series_axis_unit: str,
+        meta_series_axis_value:float,
+        ):
 
-    if argz.minzoom < 0 or argz.maxzoom < 0:
+    if minzoom < 0 or maxzoom < 0:
         raise RuntimeError("minzoom and maxzoom must be 0 or greater.")
 
-    if argz.minzoom > argz.maxzoom:
+    if minzoom > maxzoom:
         raise RuntimeError("minzoom must be lower than maxzoom.")
 
-    output_folder = argz.output
+    output_folder = output
 
-    if argz.identifier:
-        output_folder = os.path.join(output_folder, argz.identifier)
+    if identifier:
+        output_folder = os.path.join(output_folder, identifier)
 
     tile_output_folder = output_folder
     relative_axis_tile_path = ""
 
-    if argz.meta_series_axis_value is not None:
-        relative_axis_tile_path = str(argz.meta_series_axis_value).replace('.', '-')
+    if meta_series_axis_value is not None:
+        relative_axis_tile_path = str(meta_series_axis_value).replace('.', '-')
         tile_output_folder = os.path.join(tile_output_folder, relative_axis_tile_path)
 
-    mercator_ds = warp_to_web_mercator(argz.input, output_folder)
+    mercator_ds = warp_to_web_mercator(input, output_folder)
 
     tileset_metadata: TilesetMetadata = {
-        "name": argz.meta_name,
-        "description": argz.meta_description,
-        "attribution": [argz.meta_attribution],
+        "name": meta_name,
+        "description": meta_description,
+        "attribution": [meta_attribution],
         "crs": "EPSG:3857",
         "bounds": get_bounds_mercator(mercator_ds),
         "tileSize": TILE_SIZE,
         "rasterFormat": "webp",
-        "minZoom": argz.minzoom,
-        "maxZoom": argz.maxzoom,
+        "minZoom": minzoom,
+        "maxZoom": maxzoom,
         "metadata": {},
         "rasterEncoding": {
-            "channels": argz.channels,
+            "channels": channels,
             "vectorDimension": 1,
-            "polynomialSlope": argz.value_step,
-            "polynomialOffset": argz.lowest_value
+            "polynomialSlope": value_step,
+            "polynomialOffset": lowest_value
         },
-        "pixelUnit": argz.meta_pixel_unit,
-        "seriesAxisName": argz.meta_series_axis_name,
-        "seriesAxisUnit": argz.meta_series_axis_unit,
+        "pixelUnit": meta_pixel_unit,
+        "seriesAxisName": meta_series_axis_name,
+        "seriesAxisUnit": meta_series_axis_unit,
         "series": [
             {
                 "tileUrlPattern": os.path.join(relative_axis_tile_path, "{z}/{x}/{y}.webp"),
-                "seriesAxisValue": argz.meta_series_axis_value,
+                "seriesAxisValue": meta_series_axis_value,
                 "metadata": {}
             }
         ]
@@ -526,12 +540,34 @@ if __name__ == "__main__":
         f.close()
 
 
-    for z in range(argz.minzoom, argz.maxzoom + 1):
+    for z in range(minzoom, maxzoom + 1):
         (x_min, x_max, y_min, y_max) = dataset_tile_range(ds=mercator_ds, z=z)
         for x in range(x_min, x_max + 1):
             for y in range(y_min, y_max + 1):
                 print(f"Tile {z}/{x}/{y} ...")
-                tile_ds = export_raw_raster_tile(z=z, x=x, y=y, src_ds_3857=mercator_ds, output_folder=tile_output_folder, keep=argz.keep_raw_tiles)
-                export_web_raster_tile(z=z, x=x, y=y, ds=tile_ds, output_folder=tile_output_folder, channels=argz.channels, polynomial_slope=argz.value_step, polynomial_offset=argz.lowest_value)
+                tile_ds = export_raw_raster_tile(z=z, x=x, y=y, src_ds_3857=mercator_ds, output_folder=tile_output_folder, keep=keep_raw_tiles)
+                export_web_raster_tile(z=z, x=x, y=y, ds=tile_ds, output_folder=tile_output_folder, channels=channels, polynomial_slope=value_step, polynomial_offset=lowest_value)
 
     
+
+if __name__ == "__main__":
+    argz = parse_args(sys.argv[1:])
+
+    create_tileset(
+        argz.input, 
+        argz.output,
+        argz.identifier,
+        argz.minzoom,
+        argz.maxzoom,
+        argz.lowest_value,
+        argz.value_step,
+        argz.channels,
+        argz.keep_raw_tiles,
+        argz.meta_name,
+        argz.meta_description,
+        argz.meta_attribution,
+        argz.meta_pixel_unit,
+        argz.meta_series_axis_name,
+        argz.meta_series_axis_unit,
+        argz.meta_series_axis_value,
+        )
