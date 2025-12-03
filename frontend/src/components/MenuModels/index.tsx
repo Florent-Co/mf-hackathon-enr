@@ -14,7 +14,7 @@ export default function MenuModels() {
       label: 'Modèles',
       children: [
         { key: 'cmcc', label: 'CMCC-CM2-SR5' },
-        { key: 'ipsl', label: 'IPSL-CM6A-LR' },
+        // { key: 'ipsl', label: 'IPSL-CM6A-LR' },
       ],
     }
   ];

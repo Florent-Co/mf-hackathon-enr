@@ -383,7 +383,7 @@ def export_web_raster_tile(z: int, x: int, y: int, ds: gdal.Dataset, output_fold
     output_web_tile_filepath = os.path.join(output_folder, f"{str(z)}/{str(x)}/{str(y)}.webp")
     output_web_tile_dir = os.path.dirname(output_web_tile_filepath)
 
-    print(output_web_tile_filepath)
+    # print(output_web_tile_filepath)
 
     # If already existing, we remove it so that we can overwrite it
     if os.path.isfile(output_web_tile_filepath):
@@ -575,8 +575,16 @@ def create_tileset(
 #         )
     
 if __name__ == "__main__":
-    all_models = ["CMCC"]
-    all_indicators = ["dju"]
+    all_models = [
+        "CMCC"
+    ]
+    all_indicators = [
+        # "dju",
+        # "tas",
+        "tasmin0",
+        # "rsds",
+        # "ws"
+    ]
     all_tracc_values = [
         "15",
         "20",
@@ -594,25 +602,48 @@ if __name__ == "__main__":
 
     lowest_values = {
         "dju": 0,
+        "tas": -20,
+        "tasmin0": 0,
+        "rsds": 0,
+        "ws": 0,
     }
 
     value_steps = {
         "dju": 1,
+        "tas": 0.01,
+        "tasmin0": 1,
+        "rsds": 0.1,
+        "ws": 0.1,
     }
 
     axis_name = {
-        "dju": "Degree day"
+        "dju": "TRACC Degree",
+        "tas": "TRACC Degree",
+        "tasmin0": "TRACC Degree",
+        "rsds": "TRACC Degree",
+        "ws": "TRACC Degree",
     }
 
     axis_unit = {
-        "dju": "Degree day"
+        "dju": "°C",
+        "tas": "°C",
+        "tasmin0": "°C",
+        "rsds": "°C",
+        "ws": "°C",
     }
 
     pixel_unit = {
-        "dju": "°C.day"
+        "dju": "°C.day",
+        "tas": "°C",
+        "tasmin0": "jour(s)",
+        "rsds": "W/m²",
+        "ws": "m/s",
     }
 
-    file_pattern = '/home/jlurie/Downloads/dju_cmcc/ok/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
+    file_pattern = '/home/jlurie/Downloads/tasmin0_cmcc/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
+
+    # file_pattern = "/home/jlurie/Downloads/rsds/{indicator}_{model}_tracc{tracc_value}_{month}.tif"
+    # file_pattern = "/home/jlurie/Downloads/ws/{indicator}_{model}_tracc{tracc_value}_{month}.tif"
 
     output_folder = "../frontend/public/tilesets"
 
@@ -643,8 +674,8 @@ if __name__ == "__main__":
                         meta_name=f"{identifier}_{tracc_value}",
                         meta_description="",
                         meta_attribution="Meteo France",
-                        meta_pixel_unit="°C",
+                        meta_pixel_unit=pixel_unit[indicator],
                         meta_series_axis_name="TRACC °C",
-                        meta_series_axis_unit=pixel_unit[indicator],
+                        meta_series_axis_unit=axis_unit[indicator],
                         meta_series_axis_value=tracc_axis_values[tracc_value],
                     )

@@ -2,6 +2,7 @@ import { Menu, type MenuProps } from 'antd';
 import styles from './style.module.css';
 import { useAtom } from 'jotai';
 import { indicatorAtom } from '../../store';
+import { addLayer } from '../../tools';
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -21,11 +22,13 @@ export default function MenuIndicators() {
       // icon: <MailOutlined />,
       children: [
         { key: 'dju', label: 'DJU' },
-        { key: 'delta-dju', label: 'Delta DJU' },
-        { key: 'solaire', label: 'Solaire' },
-        { key: 'delta-solaire', label: 'Delta Solaire' },
-        { key: 'eolien', label: 'Éolien' },
-        { key: 'delta-eolien', label: 'Delta Éolien' },
+        // { key: 'delta-dju', label: 'Delta DJU' },
+        { key: 'tas', label: 'Température moyenne' },
+        { key: 'tasmin0', label: 'Nombre de jour inf. à 0°C' },
+        { key: 'rsds', label: 'Rayonnement solaire' },
+        // { key: 'delta-solaire', label: 'Delta Solaire' },
+        { key: 'ws', label: 'Vitesse de vent' },
+        // { key: 'delta-eolien', label: 'Delta Éolien' },
       ],
     }
   ];
@@ -33,6 +36,7 @@ export default function MenuIndicators() {
   const onClick: MenuProps['onClick'] = (e) => {
     console.log('click ', e);
     setIndicator(e.key);
+    addLayer();
   };
 
 

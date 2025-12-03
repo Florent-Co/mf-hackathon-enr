@@ -1,13 +1,19 @@
 import { getDefaultStore } from "jotai";
-import { indicatorAtom, layerAtom, mlMapAtom, modelAtom, monthAtom, traccValueAtom } from "./store";
+import { climatelayerPickingValueAtom, indicatorAtom, layerAtom, mlMapAtom, modelAtom, monthAtom, traccValueAtom } from "./store";
 import { Colormap, ColormapDescriptionLibrary, MultiChannelSeriesTiledLayer, type MultiChannelSeriesTiledLayerSpecification } from "shadertiledlayer";
+import type { MapMouseEvent, Subscription } from "maplibre-gl";
 
 
 const colormaps = {
   "dju": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: 0, max: 600 }),
-  "tas": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: -10, max: 25 }),
+  "tas": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: -10, max: 30 }),
+  "tasmin0": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: 0, max: 30 }),
+  "rsds": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: 0, max: 300 }),
+  "ws": Colormap.fromColormapDescription(ColormapDescriptionLibrary.turbo , { min: 0, max: 20 }),
 }
 
+
+let eventSub: Subscription | undefined = undefined;
 
 
 export async function addLayer() {
@@ -53,17 +59,23 @@ export async function addLayer() {
 
   // const store = getDefaultStore();
 
-  // map.on("mousemove", async (e: MapMouseEvent) => {
-  //   try {
-  //     const pickingInfo = await climateLayer.pick(e.lngLat);
-  //     if (pickingInfo) {
-  //       store.set(climatelayerPickingValueAtom, pickingInfo);
-  //     } else {
-  //       store.set(climatelayerPickingValueAtom, null);
-  //     }
-  //   } catch (_err) {
-  //     store.set(climatelayerPickingValueAtom, null);
-  //   }
-  // });
+  if (eventSub) {
+    eventSub.unsubscribe()
+  }
+
+  eventSub = map?.on("mousemove", async (e: MapMouseEvent) => {
+    try {
+      const pickingInfo = await climateLayer.pick(e.lngLat);
+      if (pickingInfo) {
+        console.log(pickingInfo);
+        
+        store.set(climatelayerPickingValueAtom, pickingInfo);
+      } else {
+        store.set(climatelayerPickingValueAtom, null);
+      }
+    } catch (_err) {
+      store.set(climatelayerPickingValueAtom, null);
+    }
+  });
 
 }

@@ -105,7 +105,7 @@ function App() {
       <SideMenu/>
       <div className='element-container'>
         
-        <span>{climatelayerPickingValue ? climatelayerPickingValue.value.toFixed(2) : ""}</span>
+        <span>{climatelayerPickingValue ? `${climatelayerPickingValue.value.toFixed(2)} ${climatelayerPickingValue.unit}` : ""}</span>
       </div>
       <MlMap />
       <Drawer
