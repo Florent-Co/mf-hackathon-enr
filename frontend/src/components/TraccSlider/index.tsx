@@ -36,7 +36,7 @@ export default function TraccSlider() {
     <div
       className={styles.traccSliderContainer}
     >
-       <Slider  min={1.5} max={4} step={0.01} marks={marks} defaultValue={1.5} onChange={onChange}/>
+      <Slider  min={1.5} max={4} step={0.01} marks={marks} defaultValue={1.5} onChange={onChange}/>
     </div>
   )
 }

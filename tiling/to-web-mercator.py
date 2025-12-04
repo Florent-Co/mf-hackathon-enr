@@ -580,12 +580,12 @@ if __name__ == "__main__":
     ]
     
     all_indicators = [
-        # "dju",
+        "dju",
         # "tas",
         # "tasmin0",
         # "rsds",
         # "ws",
-        "tasmax30",
+        # "tasmax30",
     ]
     all_tracc_values = [
         "15",
@@ -649,11 +649,14 @@ if __name__ == "__main__":
 
     # file_pattern = '/home/jlurie/Downloads/tasmin0_CMCC/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
 
-    file_pattern = '/home/jlurie/Downloads/tasmax30_CMCC/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
+    # file_pattern = '/home/jlurie/Downloads/tasmax30_CMCC/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
 
 
     # file_pattern = "/home/jlurie/Downloads/rsds/{indicator}_{model}_tracc{tracc_value}_{month}.tif"
     # file_pattern = "/home/jlurie/Downloads/ws/{indicator}_{model}_tracc{tracc_value}_{month}.tif"
+
+    file_pattern = "/home/jlurie/Downloads/CMCC-CM2-SR5/dju/{indicator}_{model}_tracc{tracc_value}_{month}.tif"
+
 
     output_folder = "../frontend/public/tilesets"
 

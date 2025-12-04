@@ -1,3 +1,12 @@
 .container {
   font-size: 15px;
 }
+
+.container a {
+  text-decoration: none;
+  color: #316ab7;
+}
+
+.container img {
+  width: 100%;
+}
